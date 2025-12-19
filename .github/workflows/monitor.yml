@@ -1,0 +1,94 @@
+name: URL Monitor
+
+on:
+  # Multiple schedules for different intervals
+  schedule:
+    # Every hour (for "hourly" URLs)
+    - cron: '0 * * * *'
+    # Every 6 hours (for "6hours" URLs)
+    - cron: '0 */6 * * *'
+    # Daily at midnight UTC (for "daily" URLs)
+    - cron: '0 0 * * *'
+  
+  # Allow manual trigger with interval selection
+  workflow_dispatch:
+    inputs:
+      interval:
+        description: 'Check interval filter'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - hourly
+          - 6hours
+          - daily
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Need full history to push changes back
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium
+          playwright install-deps chromium
+
+      - name: Determine interval to check
+        id: interval
+        run: |
+          # For manual dispatch, use the input
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "interval=${{ inputs.interval }}" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # For scheduled runs, determine based on cron pattern
+          HOUR=$(date -u +%H)
+          MINUTE=$(date -u +%M)
+          
+          # At midnight (0:00), run daily checks
+          if [ "$HOUR" = "00" ] && [ "$MINUTE" -lt "10" ]; then
+            echo "interval=daily" >> $GITHUB_OUTPUT
+          # At 0, 6, 12, 18 hours, run 6hours checks
+          elif [ "$((HOUR % 6))" = "0" ] && [ "$MINUTE" -lt "10" ]; then
+            echo "interval=6hours" >> $GITHUB_OUTPUT
+          # Every hour, run hourly checks
+          else
+            echo "interval=hourly" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run URL monitor
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+        run: |
+          python src/monitor.py --interval ${{ steps.interval.outputs.interval }}
+
+      - name: Commit baseline changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Check if there are any changes to commit
+          if git diff --quiet baselines/; then
+            echo "No baseline changes to commit"
+          else
+            git add baselines/
+            git commit -m "Update baselines [skip ci]"
+            git push
+          fi
+

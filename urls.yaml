@@ -1,0 +1,26 @@
+# VisualPing URL Configuration
+# Add URLs you want to monitor for changes
+
+urls:
+  # Example 1: Monitor a class enrollment page
+  - name: "HIST 187 Class Status"
+    url: "https://sa.ucla.edu/ro/Public/SOC/Results/ClassDetail?term_cd=26W&subj_area_cd=HIST%20%20%20&crs_catlg_no=0187N%20C%20&class_id=221542200&class_no=%20001%20%20"
+    selector: "#enrl_mtng_info"     # Track enrollment/meeting info table
+    js_render: true                 # Use Playwright for JS-rendered pages
+    check_interval: "hourly"        # Options: hourly, 6hours, daily
+    expires: "2026-01-25"           # Optional: stop tracking after this date
+    notify_email: "shloakrathod1@gmail.com"
+
+  # Example 2: Monitor a product availability page (no selector = full page)
+  # - name: "Product Stock"
+  #   url: "https://store.com/product/123"
+  #   check_interval: "6hours"
+  #   notify_email: "your@email.com"
+
+  # Example 3: Monitor with no expiry date (tracks forever)
+  # - name: "News Page"
+  #   url: "https://news.site.com/updates"
+  #   selector: "#main-content"
+  #   check_interval: "daily"
+  #   notify_email: "your@email.com"
+
