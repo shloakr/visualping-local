@@ -118,24 +118,25 @@ export default function TrackPage() {
         </nav>
 
         <div className="form-container" style={{ paddingTop: '2rem' }}>
-          <div className="form-card animate-fade-in" style={{ textAlign: 'center', padding: '3rem 2rem' }}>
+          <div className="form-card animate-fade-in" style={{ textAlign: 'center', padding: '3.5rem 2.5rem' }}>
             <div style={{
-              width: '72px',
-              height: '72px',
+              width: '88px',
+              height: '88px',
               borderRadius: '50%',
               background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '0 auto 1.5rem'
+              margin: '0 auto 1.75rem',
+              boxShadow: '0 8px 32px rgba(34, 197, 94, 0.3)'
             }}>
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 6L9 17l-5-5"/>
               </svg>
             </div>
-            <h1 className="form-title">You&apos;re all set!</h1>
-            <p style={{ color: 'var(--text-medium)' }}>
-              We&apos;ll email you when the status changes.
+            <h1 className="form-title" style={{ marginBottom: '0.625rem' }}>You&apos;re all set!</h1>
+            <p style={{ color: 'var(--text-medium)', fontSize: '0.95rem', lineHeight: 1.6 }}>
+              We&apos;ll email you when the enrollment status changes.
             </p>
           </div>
         </div>
@@ -155,11 +156,11 @@ export default function TrackPage() {
         </Link>
       </nav>
 
-      <div className="form-container">
+      <div className="form-container" style={{ maxWidth: '480px' }}>
         {/* Header */}
         <div className="form-header animate-fade-in">
           <h1 className="form-title">Track a class</h1>
-          <p className="form-subtitle">Get notified when enrollment status changes.</p>
+          <p className="form-subtitle" style={{ fontSize: '0.95rem' }}>Get notified when enrollment status changes.</p>
         </div>
 
         {/* Form Card */}
@@ -175,12 +176,19 @@ export default function TrackPage() {
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://sa.ucla.edu/ro/Public/SOC/..."
                 className={`input ${urlError ? 'input-error' : ''}`}
-                style={{ fontFamily: 'var(--font-geist-mono)', fontSize: '0.85rem' }}
+                style={{ fontFamily: 'var(--font-geist-mono)', fontSize: '0.875rem' }}
                 required
               />
               
               {urlError && (
-                <p style={{ fontSize: '0.85rem', color: 'var(--error)', marginTop: '0.5rem' }}>{urlError}</p>
+                <p style={{ fontSize: '0.85rem', color: 'var(--error)', marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  {urlError}
+                </p>
               )}
 
               {parsedClass && (
@@ -189,15 +197,19 @@ export default function TrackPage() {
                   alignItems: 'center', 
                   gap: '0.5rem', 
                   marginTop: '0.75rem',
-                  fontSize: '0.9rem'
+                  fontSize: '0.9rem',
+                  padding: '0.625rem 0.875rem',
+                  background: '#F0FDF4',
+                  borderRadius: '10px',
+                  border: '1px solid #BBF7D0'
                 }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="10" fill="#22c55e"/>
                     <path d="M8 12l3 3 5-6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  <span style={{ fontWeight: 600 }}>{generateClassName(parsedClass)}</span>
-                  <span style={{ color: 'var(--text-light)' }}>·</span>
-                  <span style={{ color: 'var(--text-light)' }}>{formatTermCode(parsedClass.termCode)}</span>
+                  <span style={{ fontWeight: 600, color: '#16A34A' }}>{generateClassName(parsedClass)}</span>
+                  <span style={{ color: '#4ade80' }}>·</span>
+                  <span style={{ color: '#16A34A', opacity: 0.8 }}>{formatTermCode(parsedClass.termCode)}</span>
                 </div>
               )}
 
@@ -220,13 +232,14 @@ export default function TrackPage() {
               {showUrlHelp && (
                 <div style={{
                   marginTop: '0.75rem',
-                  padding: '1rem',
+                  padding: '1.125rem',
                   background: 'var(--cream)',
                   borderRadius: '12px',
-                  fontSize: '0.85rem',
-                  color: 'var(--text-medium)'
+                  fontSize: '0.875rem',
+                  color: 'var(--text-medium)',
+                  border: '1px solid var(--cream-dark)'
                 }}>
-                  <ol style={{ paddingLeft: '1.25rem', margin: 0, lineHeight: 1.8 }}>
+                  <ol style={{ paddingLeft: '1.25rem', margin: 0, lineHeight: 1.9 }}>
                     <li>Go to <a href="https://sa.ucla.edu/ro/Public/SOC/Results" target="_blank" rel="noopener noreferrer" className="link">UCLA Schedule of Classes</a></li>
                     <li>Search for your class</li>
                     <li>Click on the lecture (e.g., &quot;Lec 1&quot;)</li>
@@ -260,10 +273,10 @@ export default function TrackPage() {
                 onChange={(e) => setResendKey(e.target.value)}
                 placeholder="re_..."
                 className="input"
-                style={{ fontFamily: 'var(--font-geist-mono)' }}
+                style={{ fontFamily: 'var(--font-geist-mono)', fontSize: '0.875rem' }}
                 required
               />
-              <p className="helper-text">
+              <p className="helper-text" style={{ marginTop: '0.5rem' }}>
                 Free at <a href="https://resend.com/api-keys" target="_blank" rel="noopener noreferrer" className="link">resend.com</a>
               </p>
             </div>
@@ -315,7 +328,7 @@ export default function TrackPage() {
               type="submit"
               disabled={isSubmitting || !parsedClass}
               className="btn-solid btn-blue"
-              style={{ width: '100%', marginTop: '0.5rem' }}
+              style={{ width: '100%', marginTop: '0.75rem' }}
             >
               {isSubmitting ? (
                 <>

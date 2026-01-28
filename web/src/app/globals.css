@@ -253,9 +253,13 @@ body {
   box-shadow: 0 4px 16px rgba(0,0,0,0.15);
 }
 
-.btn-solid:hover {
+.btn-solid:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.btn-solid:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .btn-solid:disabled {
@@ -274,7 +278,7 @@ body {
   color: white;
 }
 
-.btn-blue:hover {
+.btn-blue:hover:not(:disabled) {
   background: var(--ucla-dark-blue);
 }
 
@@ -535,6 +539,7 @@ body {
   border-radius: 24px;
   padding: 2rem;
   box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.04);
 }
 
 /* Form inputs */
@@ -548,6 +553,7 @@ body {
   font-weight: 600;
   color: var(--text-dark);
   margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
 }
 
 .input {
@@ -558,21 +564,30 @@ body {
   background: white;
   font-size: 0.95rem;
   color: var(--text-dark);
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   outline: none;
 }
 
 .input::placeholder {
   color: var(--text-light);
+  opacity: 0.6;
+}
+
+.input:hover {
+  border-color: #d0d0d0;
 }
 
 .input:focus {
   border-color: var(--ucla-blue);
-  box-shadow: 0 0 0 3px rgba(39, 116, 174, 0.1);
+  box-shadow: 0 0 0 4px rgba(39, 116, 174, 0.12);
 }
 
 .input-error {
   border-color: var(--error);
+}
+
+.input-error:focus {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
 }
 
 select.input {
@@ -648,11 +663,13 @@ select.input {
   border-radius: 100px;
   font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .badge-success {
   background: #DCFCE7;
   color: #16A34A;
+  border: 1px solid #BBF7D0;
 }
 
 /* Tracker card */
@@ -661,16 +678,19 @@ select.input {
   border-radius: 20px;
   padding: 1.5rem;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
 }
 
 .tracker-card:hover {
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  border-color: rgba(39, 116, 174, 0.08);
+  transform: translateY(-2px);
 }
 
 .tracker-icon {
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
   border-radius: 14px;
   background: linear-gradient(135deg, var(--ucla-blue) 0%, var(--ucla-dark-blue) 100%);
   display: flex;
@@ -680,11 +700,15 @@ select.input {
   font-weight: 700;
   font-size: 0.9rem;
   flex-shrink: 0;
+  letter-spacing: -0.02em;
+  box-shadow: 0 2px 8px rgba(39, 116, 174, 0.2);
 }
 
 .tracker-name {
   font-weight: 600;
   margin-bottom: 0.25rem;
+  letter-spacing: -0.01em;
+  color: var(--text-dark);
 }
 
 .tracker-meta {
@@ -694,7 +718,7 @@ select.input {
 
 .tracker-divider {
   height: 1px;
-  background: #f0f0f0;
+  background: linear-gradient(to right, transparent, #e5e5e5 20%, #e5e5e5 80%, transparent);
   margin: 1rem 0;
 }
 
@@ -706,7 +730,7 @@ select.input {
   align-items: center;
   justify-content: center;
   color: var(--text-light);
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   border: none;
   background: transparent;
@@ -715,6 +739,11 @@ select.input {
 .icon-btn:hover {
   background: #f5f5f5;
   color: var(--text-dark);
+  transform: scale(1.05);
+}
+
+.icon-btn:active {
+  transform: scale(0.95);
 }
 
 .icon-btn-danger:hover {

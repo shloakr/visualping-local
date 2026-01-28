@@ -145,26 +145,27 @@ function ManageContent() {
           </Link>
         </nav>
 
-        <div className="form-container" style={{ maxWidth: '400px' }}>
-          <div className="form-card animate-fade-in" style={{ textAlign: 'center', padding: '2.5rem 2rem' }}>
+        <div className="form-container" style={{ maxWidth: '420px' }}>
+          <div className="form-card animate-fade-in" style={{ textAlign: 'center', padding: '2.75rem 2.25rem' }}>
             <div style={{
-              width: '72px',
-              height: '72px',
+              width: '80px',
+              height: '80px',
               borderRadius: '50%',
               background: 'linear-gradient(135deg, var(--ucla-blue) 0%, var(--ucla-dark-blue) 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '0 auto 1.5rem'
+              margin: '0 auto 1.75rem',
+              boxShadow: '0 8px 24px rgba(39, 116, 174, 0.25)'
             }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                 <polyline points="22,6 12,13 2,6"/>
               </svg>
             </div>
             
-            <h1 className="form-title">Manage trackers</h1>
-            <p style={{ color: 'var(--text-medium)', marginBottom: '1.5rem' }}>
+            <h1 className="form-title" style={{ marginBottom: '0.625rem' }}>Manage trackers</h1>
+            <p style={{ color: 'var(--text-medium)', marginBottom: '2rem', fontSize: '0.95rem' }}>
               Enter your email to access your trackers.
             </p>
 
@@ -173,9 +174,9 @@ function ManageContent() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@ucla.edu"
+                placeholder="shloakrathod1@gmail.com"
                 className="input"
-                style={{ textAlign: 'center', marginBottom: '1rem' }}
+                style={{ textAlign: 'center', marginBottom: '1rem', fontSize: '0.95rem' }}
                 required
               />
 
@@ -244,20 +245,21 @@ function ManageContent() {
         </Link>
       </nav>
 
-      <div className="form-container" style={{ maxWidth: '540px' }}>
+      <div className="form-container" style={{ maxWidth: '600px' }}>
         {/* Header Card */}
         <div className="form-card animate-fade-in" style={{ 
-          padding: '1.25rem 1.5rem', 
-          marginBottom: '1rem',
+          padding: '1.5rem 1.75rem', 
+          marginBottom: '1.25rem',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          gap: '1rem'
         }}>
-          <div>
-            <h1 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Your trackers</h1>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>{email}</p>
+          <div style={{ minWidth: 0 }}>
+            <h1 style={{ fontSize: '1.35rem', fontWeight: 600, marginBottom: '0.25rem', fontFamily: 'var(--font-playfair), Georgia, serif', letterSpacing: '-0.01em' }}>Your trackers</h1>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-light)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{email}</p>
           </div>
-          <Link href="/track" className="btn-solid btn-blue btn-sm">
+          <Link href="/track" className="btn-solid btn-blue btn-sm" style={{ flexShrink: 0 }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 5v14M5 12h14"/>
             </svg>
@@ -285,46 +287,47 @@ function ManageContent() {
             <span className="spinner" style={{ margin: '0 auto', display: 'block', color: 'var(--ucla-blue)' }}></span>
           </div>
         ) : activeTrackers.length === 0 ? (
-          <div className="form-card animate-fade-in" style={{ padding: '3rem 2rem', textAlign: 'center' }}>
+          <div className="form-card animate-fade-in" style={{ padding: '3.5rem 2rem', textAlign: 'center' }}>
             <div style={{
-              width: '72px',
-              height: '72px',
+              width: '80px',
+              height: '80px',
               borderRadius: '50%',
-              background: 'var(--cream)',
+              background: 'linear-gradient(135deg, var(--cream) 0%, var(--cream-dark) 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '0 auto 1rem'
+              margin: '0 auto 1.25rem'
             }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
                 <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
                 <line x1="12" y1="22.08" x2="12" y2="12"/>
               </svg>
             </div>
-            <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>No active trackers yet</p>
+            <h2 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--text-dark)' }}>No active trackers yet</h2>
+            <p style={{ color: 'var(--text-light)', marginBottom: '1.75rem', fontSize: '0.9rem' }}>Start tracking a class to get notified when spots open</p>
             <Link href="/track" className="btn-solid btn-gold">
               Track your first class
             </Link>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {activeTrackers.map((tracker, index) => (
               <div 
                 key={tracker.id} 
                 className="tracker-card animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                style={{ animationDelay: `${index * 0.05}s` }}
               >
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', minWidth: 0 }}>
-                    <div className="tracker-icon">
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.125rem', minWidth: 0 }}>
+                    <div className="tracker-icon" style={{ fontSize: '0.95rem' }}>
                       {tracker.subject_area?.slice(0, 2) || "??"}
                     </div>
-                    <div style={{ minWidth: 0 }}>
-                      <div className="tracker-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div className="tracker-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '1.05rem' }}>
                         {tracker.class_name || "Unknown Class"}
                       </div>
-                      <p className="tracker-meta">
+                      <p className="tracker-meta" style={{ marginTop: '0.125rem' }}>
                         {tracker.term_code ? formatTermCode(tracker.term_code) : ""}
                       </p>
                     </div>
@@ -335,10 +338,10 @@ function ManageContent() {
                   </span>
                 </div>
 
-                <div className="tracker-divider"></div>
+                <div className="tracker-divider" style={{ margin: '1.125rem 0' }}></div>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.85rem', color: 'var(--text-light)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', fontSize: '0.875rem', color: 'var(--text-light)' }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <circle cx="12" cy="12" r="10"/>
@@ -349,7 +352,7 @@ function ManageContent() {
                     <span>·</span>
                     <span>Until {formatDate(tracker.expires_at)}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                     <a
                       href={tracker.ucla_url}
                       target="_blank"

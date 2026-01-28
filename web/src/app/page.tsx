@@ -46,85 +46,217 @@ export default function Home() {
               How it works
             </Link>
           </div>
-
-          {/* Floating Stats Card */}
-          {/* <div className="float-card" style={{ bottom: '20%', right: '8%' }}>
-            <div style={{ fontWeight: 700, marginBottom: '0.75rem', fontSize: '0.9rem' }}>Stats</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-medium)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '2rem' }}>
-                <span>Monitoring</span>
-                <span style={{ fontWeight: 600, color: 'var(--ucla-blue)' }}>24/7</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '2rem' }}>
-                <span>Check interval</span>
-                <span style={{ fontWeight: 600, color: 'var(--ucla-blue)' }}>1 hour</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '2rem' }}>
-                <span>Price</span>
-                <span style={{ fontWeight: 600, color: 'var(--ucla-gold)' }}>Free</span>
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
 
-      {/* How it Works Section */}
-      <section id="how" className="section-cream">
-        <h2 className="section-title">How it works</h2>
-        <p className="section-subtitle">Three simple steps to never miss enrollment</p>
+      {/* How it Works Section - Clean & Open */}
+      <section id="how" style={{ background: 'var(--cream)', padding: '5rem 1.5rem' }}>
+        <div style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
+          <h2 style={{ 
+            fontFamily: 'var(--font-playfair), Georgia, serif',
+            fontSize: 'clamp(2rem, 5vw, 2.75rem)',
+            fontWeight: 500,
+            marginBottom: '3.5rem',
+            color: 'var(--text-dark)',
+            letterSpacing: '-0.02em'
+          }}>
+            How it works
+          </h2>
 
-        <div className="steps-container">
-          <div className="step-card animate-fade-in">
-            <div className="step-number">1</div>
+          {/* Steps - Horizontal on desktop, stacked on mobile */}
+          <div style={{ 
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '3rem',
+            textAlign: 'center',
+            marginBottom: '4rem'
+          }}>
+            {/* Step 1 */}
             <div>
-              <div className="step-title">Paste the class URL</div>
-              <p className="step-desc">
-                Search for your class on UCLA&apos;s Schedule of Classes, click on the lecture section, and copy the URL.
+              <div style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '50%',
+                background: 'var(--ucla-blue)',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'var(--font-playfair), Georgia, serif',
+                fontSize: '1.5rem',
+                fontWeight: 500,
+                margin: '0 auto 1.25rem'
+              }}>
+                1
+              </div>
+              <h3 style={{ 
+                fontWeight: 600, 
+                fontSize: '1.1rem',
+                marginBottom: '0.5rem',
+                color: 'var(--text-dark)'
+              }}>
+                Find your class
+              </h3>
+              <p style={{ 
+                color: 'var(--text-medium)', 
+                fontSize: '0.95rem',
+                lineHeight: 1.6
+              }}>
+                Search on UCLA&apos;s Schedule of Classes and copy the class URL
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div>
+              <div style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '50%',
+                background: 'var(--ucla-blue)',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'var(--font-playfair), Georgia, serif',
+                fontSize: '1.5rem',
+                fontWeight: 500,
+                margin: '0 auto 1.25rem'
+              }}>
+                2
+              </div>
+              <h3 style={{ 
+                fontWeight: 600, 
+                fontSize: '1.1rem',
+                marginBottom: '0.5rem',
+                color: 'var(--text-dark)'
+              }}>
+                Enter your details
+              </h3>
+              <p style={{ 
+                color: 'var(--text-medium)', 
+                fontSize: '0.95rem',
+                lineHeight: 1.6
+              }}>
+                Add your email and a free Resend API key for notifications
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div>
+              <div style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '50%',
+                background: 'var(--ucla-gold)',
+                color: 'var(--text-dark)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'var(--font-playfair), Georgia, serif',
+                fontSize: '1.5rem',
+                fontWeight: 500,
+                margin: '0 auto 1.25rem'
+              }}>
+                3
+              </div>
+              <h3 style={{ 
+                fontWeight: 600, 
+                fontSize: '1.1rem',
+                marginBottom: '0.5rem',
+                color: 'var(--text-dark)'
+              }}>
+                Get notified
+              </h3>
+              <p style={{ 
+                color: 'var(--text-medium)', 
+                fontSize: '0.95rem',
+                lineHeight: 1.6
+              }}>
+                We&apos;ll email you the moment enrollment status changes
               </p>
             </div>
           </div>
 
-          <div className="step-card animate-fade-in delay-1">
-            <div className="step-number">2</div>
-            <div>
-              <div className="step-title">Add your email + API key</div>
-              <p className="step-desc">
-                Enter your email and a free Resend API key. We&apos;ll use it to send you notifications.
-              </p>
-            </div>
-          </div>
+          {/* Divider line */}
+          <div style={{ 
+            width: '60px', 
+            height: '1px', 
+            background: 'rgba(0,0,0,0.1)', 
+            margin: '0 auto 2.5rem' 
+          }} />
 
-          <div className="step-card animate-fade-in delay-2">
-            <div className="step-number step-number-gold">3</div>
-            <div>
-              <div className="step-title">Get notified instantly</div>
-              <p className="step-desc">
-                We check every hour. The moment enrollment status changes, you&apos;ll get an email.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* API Key Info */}
-        <div className="info-card animate-fade-in delay-3">
-          <div className="info-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
-            </svg>
-          </div>
-          <div style={{ flex: 1 }}>
-            <div className="info-title">Getting a Resend API key</div>
-            <ol className="info-list">
-              <li>Sign up at <a href="https://resend.com" target="_blank" rel="noopener noreferrer" className="link">resend.com</a> (free)</li>
-              <li>Go to API Keys → Create API Key</li>
-              <li>Copy the key (starts with <code style={{ background: '#f5f5f5', padding: '0.125rem 0.375rem', borderRadius: '4px', fontSize: '0.8rem' }}>re_</code>)</li>
-            </ol>
-            <div className="info-footer">
-              <span style={{ color: 'var(--ucla-gold)' }}>★</span> Free tier includes 100 emails/day
-            </div>
+          {/* API Key Info - Minimal */}
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ 
+              color: 'var(--text-medium)', 
+              fontSize: '0.95rem',
+              marginBottom: '0.75rem'
+            }}>
+              Need a Resend API key? It&apos;s free.
+            </p>
+            <p style={{ 
+              color: 'var(--text-light)', 
+              fontSize: '0.9rem',
+              lineHeight: 1.7
+            }}>
+              Sign up at{' '}
+              <a 
+                href="https://resend.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={{ color: 'var(--ucla-blue)', textDecoration: 'none', fontWeight: 500 }}
+              >
+                resend.com
+              </a>
+              {' '}→ API Keys → Create Key → Copy (starts with{' '}
+              <code style={{ 
+                background: 'rgba(0,0,0,0.05)', 
+                padding: '0.15rem 0.4rem', 
+                borderRadius: '4px',
+                fontSize: '0.85rem',
+                fontFamily: 'var(--font-geist-mono)'
+              }}>re_</code>)
+            </p>
+            <p style={{ 
+              color: 'var(--ucla-gold)', 
+              fontSize: '0.85rem',
+              marginTop: '0.75rem',
+              fontWeight: 500
+            }}>
+              100 free emails/day
+            </p>
           </div>
         </div>
       </section>
+
+      {/* CTA Section
+      <section style={{ 
+        background: 'white', 
+        padding: '4rem 1.5rem',
+        textAlign: 'center'
+      }}>
+        <h2 style={{ 
+          fontFamily: 'var(--font-playfair), Georgia, serif',
+          fontSize: '1.75rem',
+          fontWeight: 500,
+          marginBottom: '0.75rem',
+          color: 'var(--text-dark)'
+        }}>
+          Ready to start?
+        </h2>
+        <p style={{ 
+          color: 'var(--text-medium)', 
+          marginBottom: '1.75rem' 
+        }}>
+          Set up in under a minute. No account needed.
+        </p>
+        <Link href="/track" className="btn-solid btn-blue">
+          Track a class now
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </Link>
+      </section> */}
 
       {/* Footer with Purple Mountain Background */}
       <footer className="footer-hero">
