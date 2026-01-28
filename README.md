@@ -1,141 +1,192 @@
-# VisualPing - GitHub Actions URL Monitor
+# UCLA Class Tracker
 
-A lightweight, scalable URL monitoring service that runs on GitHub Actions. Track changes to any webpage and receive email notifications when content changes.
+A self-serve web application to track UCLA class enrollment status and receive email notifications when spots open up. Built with Next.js, Supabase, and GitHub Actions.
 
 ## Features
 
-- **Text-based change detection** - Monitors page content for changes
-- **CSS selector support** - Track specific elements instead of entire pages
-- **Configurable intervals** - Check hourly, every 6 hours, or daily
-- **Expiry dates** - Optionally stop tracking after a specific date
-- **Email notifications** - Get notified via Resend when changes are detected
-- **Scalable** - Monitor unlimited URLs
+- **Self-serve tracking** - Anyone can track UCLA classes with their own Resend API key
+- **Hourly monitoring** - Classes are checked every hour via GitHub Actions
+- **Email notifications** - Get notified instantly when enrollment status changes
+- **Beautiful web UI** - Modern, responsive interface built with Next.js and Tailwind CSS
+- **No account needed** - Just enter your email and start tracking
+- **Magic link verification** - Secure access to manage your trackers
 
-## Quick Start
-
-### 1. Fork/Clone this Repository
-
-```bash
-git clone https://github.com/your-username/visualping.git
-cd visualping
-```
-
-### 2. Set Up Resend (Free Email Service)
-
-1. Sign up at [resend.com](https://resend.com) (100 free emails/day)
-2. Create an API key in your Resend dashboard
-3. Verify a domain or use the default `onboarding@resend.dev` sender
-
-### 3. Add GitHub Secrets
-
-Go to your repository **Settings → Secrets and variables → Actions** and add:
-
-| Secret | Description |
-|--------|-------------|
-| `RESEND_API_KEY` | Your Resend API key |
-| `FROM_EMAIL` | Verified sender email (e.g., `alerts@yourdomain.com` or `onboarding@resend.dev`) |
-
-### 4. Configure URLs to Monitor
-
-Edit `urls.yaml` to add the URLs you want to track:
-
-```yaml
-urls:
-  # For JavaScript-rendered pages (like UCLA class schedule)
-  - name: "HIST 187 Class Status"
-    url: "https://sa.ucla.edu/ro/Public/SOC/Results/ClassDetail?..."
-    selector: "#enrl_mtng_info"     # CSS selector for enrollment table
-    js_render: true                  # Enable for JS-rendered pages
-    check_interval: "hourly"
-    expires: "2026-01-25"
-    notify_email: "your@email.com"
-
-  # For static pages (no js_render needed)
-  - name: "Product Availability"
-    url: "https://store.com/product"
-    check_interval: "6hours"
-    notify_email: "your@email.com"
-```
-
-### 5. Enable GitHub Actions
-
-Push your changes and the workflow will run automatically on schedule. You can also trigger it manually from the **Actions** tab.
-
-## Configuration Options
-
-| Field | Required | Description |
-|-------|----------|-------------|
-| `name` | No | Friendly name for notifications |
-| `url` | Yes | URL to monitor |
-| `selector` | No | CSS selector to monitor specific content |
-| `js_render` | No | Set to `true` for JavaScript-rendered pages (uses Playwright) |
-| `check_interval` | Yes | `hourly`, `6hours`, or `daily` |
-| `expires` | No | Stop tracking after this date (YYYY-MM-DD) |
-| `notify_email` | Yes | Email to notify on changes |
-
-## How It Works
+## Architecture
 
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│  GitHub Actions │────▶│   monitor.py     │────▶│  Send Email     │
-│  (scheduled)    │     │  - Fetch URL     │     │  via Resend     │
-└─────────────────┘     │  - Compare text  │     └─────────────────┘
-                        │  - Save baseline │
-                        └──────────────────┘
-                               │
-                               ▼
-                        ┌──────────────────┐
-                        │  baselines/      │
-                        │  (stored in repo)│
-                        └──────────────────┘
+│  Vercel         │────▶│   Supabase       │◀────│  GitHub Actions │
+│  (Web UI)       │     │   (Database)     │     │  (Monitor)      │
+└─────────────────┘     └──────────────────┘     └─────────────────┘
+        │                        │                        │
+        │                        │                        │
+   Users add                Stores tracked           Checks URLs
+   class URLs               URLs & baselines         every hour
+                                                         │
+                                                         ▼
+                                                  ┌─────────────────┐
+                                                  │  Resend         │
+                                                  │  (Email)        │
+                                                  └─────────────────┘
 ```
 
-1. GitHub Actions runs on schedule (hourly/6hours/daily)
-2. The script fetches each URL's content
-3. Content is compared against stored baseline
-4. If changed: sends email notification and updates baseline
-5. Baselines are committed back to the repository
+## Quick Start
 
-## Running Locally
+### 1. Clone the Repository
 
 ```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Set environment variables
-export RESEND_API_KEY="your_api_key"
-export FROM_EMAIL="your@email.com"
-
-# Run the monitor
-python src/monitor.py --interval all
+git clone https://github.com/shloakr/visualping-local.git
+cd visualping-local
 ```
 
-## Manual Trigger
+### 2. Set Up Supabase
 
-You can manually trigger the workflow from the GitHub Actions tab:
+1. Create a free account at [supabase.com](https://supabase.com)
+2. Create a new project
+3. Go to **SQL Editor** and run the contents of `supabase/schema.sql`
+4. Go to **Settings > API** and copy your project URL and service role key
 
-1. Go to **Actions** → **URL Monitor**
-2. Click **Run workflow**
-3. Select the interval to check (or "all")
+See `supabase/README.md` for detailed instructions.
+
+### 3. Deploy to Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/shloakr/visualping-local&root-directory=web)
+
+Or deploy manually:
+
+```bash
+cd web
+npm install
+npm run build
+```
+
+Add these environment variables in Vercel:
+
+| Variable | Description |
+|----------|-------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anon/public key |
+| `SUPABASE_SERVICE_KEY` | Your Supabase service role key |
+| `NEXT_PUBLIC_APP_URL` | Your Vercel deployment URL |
+
+### 4. Configure GitHub Actions
+
+Add these secrets to your GitHub repository (**Settings > Secrets and variables > Actions**):
+
+| Secret | Description |
+|--------|-------------|
+| `SUPABASE_URL` | Your Supabase project URL |
+| `SUPABASE_KEY` | Your Supabase service role key |
+| `FROM_EMAIL` | Default sender email (e.g., `alerts@yourdomain.com`) |
+
+The GitHub Action runs automatically every hour to check all tracked URLs.
+
+## How It Works
+
+1. **User visits the web UI** and enters a UCLA class URL, their email, and their Resend API key
+2. **API key is validated** against Resend to ensure it's valid before saving
+3. **The tracker is saved** to Supabase with all the configuration
+4. **GitHub Actions runs hourly** and fetches all active trackers from Supabase
+5. **For each tracker**, it fetches the UCLA page using Playwright and compares to the baseline
+6. **If changed**, it sends an email using the user's own Resend API key
+7. **Baseline is updated** in Supabase for next comparison
+
+## Local Development
+
+### Web App (Next.js)
+
+```bash
+cd web
+cp .env.example .env.local
+# Fill in your Supabase credentials
+npm install
+npm run dev
+```
+
+### Monitor Script (Python)
+
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+playwright install chromium
+
+export SUPABASE_URL="your-url"
+export SUPABASE_KEY="your-key"
+python src/monitor.py --source supabase --interval all
+```
+
+## Project Structure
+
+```
+visualping-local/
+├── web/                      # Next.js web application
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── page.tsx      # Landing page
+│   │   │   ├── track/        # Add tracker form
+│   │   │   ├── manage/       # Manage existing trackers
+│   │   │   └── api/          # API routes
+│   │   └── lib/
+│   │       └── supabase.ts   # Supabase client & utilities
+│   └── .env.example
+├── src/
+│   └── monitor.py            # URL monitoring script (Playwright)
+├── supabase/
+│   ├── schema.sql            # Database schema
+│   └── README.md             # Supabase setup guide
+├── .github/
+│   └── workflows/
+│       └── monitor.yml       # GitHub Actions workflow
+├── baselines/                # File-based baselines (for yaml source)
+├── urls.yaml                 # YAML-based URL config (legacy)
+└── requirements.txt          # Python dependencies
+```
+
+## Configuration Options
+
+### Tracker Settings (via Web UI)
+
+| Field | Description |
+|-------|-------------|
+| `UCLA Class URL` | Full URL from UCLA Schedule of Classes |
+| `Email` | Your email for notifications |
+| `Resend API Key` | Your personal Resend API key (validated on submit) |
+| `Check Interval` | `hourly`, `6hours`, or `daily` |
+| `Stop Tracking After` | Expiration date for the tracker |
+
+### Check Intervals
+
+| Interval | Schedule |
+|----------|----------|
+| `hourly` | Every hour |
+| `6hours` | 0:00, 6:00, 12:00, 18:00 UTC |
+| `daily` | 0:00 UTC |
+
+## Getting a Resend API Key
+
+1. Sign up at [resend.com](https://resend.com) (free tier: 100 emails/day)
+2. Go to **API Keys** in your dashboard
+3. Click **Create API Key**
+4. Copy the key (starts with `re_`)
 
 ## Troubleshooting
 
 ### Email not sending?
-- Verify your `RESEND_API_KEY` is correct
-- Check that `FROM_EMAIL` is verified in Resend
-- View workflow logs in GitHub Actions for error details
+- Verify your Resend API key is valid (it's checked when you add a tracker)
+- Check that the key starts with `re_`
+- View GitHub Actions logs for error details
 
 ### Changes not being detected?
-- Check if the `selector` is valid
-- Some sites may block automated requests
-- Try removing the selector to monitor the full page
+- UCLA pages require JavaScript rendering (handled by Playwright)
+- Check if the class URL is valid and accessible
+- View GitHub Actions logs to see captured content
 
-### Baseline keeps changing?
-- Some pages have dynamic content (timestamps, ads)
-- Use a more specific `selector` to target stable content
+### Can't manage trackers?
+- Enter the same email you used when creating trackers
+- Check your email for the magic link (uses your saved Resend key)
+- Links expire after 1 hour
 
 ## License
 
 MIT License - Feel free to use and modify!
-
-# visualping-local

@@ -23,6 +23,15 @@ on:
           - hourly
           - 6hours
           - daily
+      source:
+        description: 'URL config source'
+        required: false
+        default: 'both'
+        type: choice
+        options:
+          - both
+          - yaml
+          - supabase
 
 jobs:
   monitor:
@@ -53,6 +62,7 @@ jobs:
           # For manual dispatch, use the input
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "interval=${{ inputs.interval }}" >> $GITHUB_OUTPUT
+            echo "source=${{ inputs.source }}" >> $GITHUB_OUTPUT
             exit 0
           fi
           
@@ -70,13 +80,21 @@ jobs:
           else
             echo "interval=hourly" >> $GITHUB_OUTPUT
           fi
+          
+          # Default to both sources for scheduled runs
+          echo "source=both" >> $GITHUB_OUTPUT
 
       - name: Run URL monitor
         env:
+          # Resend configuration
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          DEFAULT_RESEND_API_KEY: ${{ secrets.DEFAULT_RESEND_API_KEY }}
           FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+          # Supabase configuration (for web UI integration)
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
-          python src/monitor.py --interval ${{ steps.interval.outputs.interval }}
+          python src/monitor.py --interval ${{ steps.interval.outputs.interval }} --source ${{ steps.interval.outputs.source }}
 
       - name: Commit baseline changes
         run: |
@@ -91,4 +109,3 @@ jobs:
             git commit -m "Update baselines [skip ci]"
             git push
           fi
-

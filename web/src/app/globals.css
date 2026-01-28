@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  /* UCLA Brand Colors */
+  --ucla-blue: #2774AE;
+  --ucla-gold: #FFD100;
+  --ucla-darker-blue: #005587;
+  --ucla-darkest-blue: #003B5C;
+  
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ucla-blue: var(--ucla-blue);
+  --color-ucla-gold: var(--ucla-gold);
+  --color-ucla-darker-blue: var(--ucla-darker-blue);
+  --color-ucla-darkest-blue: var(--ucla-darkest-blue);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a;
+    --foreground: #f1f5f9;
+    --muted: #94a3b8;
+    --border: #334155;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Custom utilities */
+.btn-primary {
+  @apply bg-[var(--ucla-blue)] hover:bg-[var(--ucla-darker-blue)] text-white font-medium py-2.5 px-5 rounded-lg transition-colors duration-200;
+}
+
+.btn-secondary {
+  @apply bg-[var(--ucla-gold)] hover:bg-yellow-400 text-[var(--ucla-darkest-blue)] font-medium py-2.5 px-5 rounded-lg transition-colors duration-200;
+}
+
+.input-field {
+  @apply w-full px-4 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--ucla-blue)] focus:border-transparent transition-all duration-200;
+}
+
+.card {
+  @apply bg-[var(--background)] border border-[var(--border)] rounded-xl p-6 shadow-sm;
+}
