@@ -33,15 +33,21 @@ function ManageContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [isVerified, setIsVerified] = useState(!!tokenParam);
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState(created ? "Tracker created successfully!" : "");
+  const [successMessage, setSuccessMessage] = useState(created ? "Tracker created!" : "");
   const [verifyMessage, setVerifyMessage] = useState("");
 
-  // Auto-load trackers if we have email and token
   useEffect(() => {
     if (emailParam && tokenParam) {
       fetchTrackers(emailParam, tokenParam);
     }
   }, [emailParam, tokenParam]);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
 
   const fetchTrackers = async (emailToFetch: string, token?: string) => {
     setIsLoading(true);
@@ -50,9 +56,7 @@ function ManageContent() {
     try {
       const url = new URL("/api/trackers", window.location.origin);
       url.searchParams.set("email", emailToFetch);
-      if (token) {
-        url.searchParams.set("token", token);
-      }
+      if (token) url.searchParams.set("token", token);
 
       const response = await fetch(url.toString());
       const data = await response.json();
@@ -90,7 +94,7 @@ function ManageContent() {
         throw new Error(data.error || "Failed to send verification");
       }
 
-      setVerifyMessage(data.message || "Verification email sent! Check your inbox.");
+      setVerifyMessage("Check your email for the verification link.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -99,9 +103,7 @@ function ManageContent() {
   };
 
   const handleDelete = async (trackerId: string) => {
-    if (!confirm("Are you sure you want to delete this tracker?")) {
-      return;
-    }
+    if (!confirm("Delete this tracker?")) return;
 
     try {
       const response = await fetch(
@@ -111,184 +113,281 @@ function ManageContent() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || "Failed to delete tracker");
+        throw new Error(data.error || "Failed to delete");
       }
 
       setTrackers((prev) => prev.filter((t) => t.id !== trackerId));
-      setSuccessMessage("Tracker deleted successfully!");
-      setTimeout(() => setSuccessMessage(""), 3000);
+      setSuccessMessage("Tracker deleted");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete tracker");
+      setError(err instanceof Error ? err.message : "Failed to delete");
     }
   };
 
   const formatDate = (dateString: string | null) => {
-    if (!dateString) return "Never";
+    if (!dateString) return "—";
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     });
   };
 
-  // If not verified, show verification form
+  // Verification view
   if (!isVerified) {
     return (
-      <div className="max-w-md mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold mb-2">Manage Your Trackers</h1>
-        <p className="text-[var(--muted)] mb-8">
-          Enter your email to receive a verification link.
-        </p>
+      <div className="form-page">
+        {/* Nav */}
+        <nav className="nav" style={{ position: 'absolute' }}>
+          <Link href="/" className="nav-logo nav-logo-dark">
+            UCLA Class Tracker
+          </Link>
+          <Link href="/track" className="nav-btn nav-btn-dark">
+            Track
+          </Link>
+        </nav>
 
-        <form onSubmit={handleVerify} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block font-medium mb-2">
-              Email Address
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@ucla.edu"
-              className="input-field"
-              required
-            />
-            <p className="mt-1 text-sm text-[var(--muted)]">
-              We&apos;ll send a verification link using your saved Resend API key.
+        <div className="form-container" style={{ maxWidth: '400px' }}>
+          <div className="form-card animate-fade-in" style={{ textAlign: 'center', padding: '2.5rem 2rem' }}>
+            <div style={{
+              width: '72px',
+              height: '72px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, var(--ucla-blue) 0%, var(--ucla-dark-blue) 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 1.5rem'
+            }}>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            
+            <h1 className="form-title">Manage trackers</h1>
+            <p style={{ color: 'var(--text-medium)', marginBottom: '1.5rem' }}>
+              Enter your email to access your trackers.
             </p>
+
+            <form onSubmit={handleVerify}>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@ucla.edu"
+                className="input"
+                style={{ textAlign: 'center', marginBottom: '1rem' }}
+                required
+              />
+
+              {error && (
+                <div className="message message-error">
+                  {error}
+                </div>
+              )}
+
+              {verifyMessage && (
+                <div className="message message-success">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17l-5-5"/>
+                  </svg>
+                  {verifyMessage}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="btn-solid btn-blue"
+                style={{ width: '100%' }}
+              >
+                {isLoading ? (
+                  <>
+                    <span className="spinner"></span>
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    Send verification link
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </>
+                )}
+              </button>
+            </form>
           </div>
+        </div>
 
-          {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-300">
-              {error}
-            </div>
-          )}
-
-          {verifyMessage && (
-            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-              <p className="text-green-700 dark:text-green-300">{verifyMessage}</p>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="btn-primary w-full py-3 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? "Sending..." : "Send Verification Email"}
-          </button>
-        </form>
+        {/* Footer */}
+        <footer className="footer-simple" style={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}>
+          <span>Not affiliated with UCLA</span>
+          <a href="https://github.com/shloakr/visualping-local" target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
+        </footer>
       </div>
     );
   }
 
-  // Verified - show trackers
+  // Trackers view
+  const activeTrackers = trackers.filter(t => t.is_active);
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold mb-1">Your Trackers</h1>
-          <p className="text-[var(--muted)]">{email}</p>
-        </div>
-        <Link href="/track" className="btn-primary">
-          + Add New Tracker
+    <div className="form-page">
+      {/* Nav */}
+      <nav className="nav" style={{ position: 'absolute' }}>
+        <Link href="/" className="nav-logo nav-logo-dark">
+          UCLA Class Tracker
         </Link>
-      </div>
+        <Link href="/track" className="nav-btn nav-btn-dark">
+          Track
+        </Link>
+      </nav>
 
-      {successMessage && (
-        <div className="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 text-green-700 dark:text-green-300">
-          {successMessage}
-        </div>
-      )}
-
-      {error && (
-        <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-300">
-          {error}
-        </div>
-      )}
-
-      {isLoading ? (
-        <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--ucla-blue)] mx-auto"></div>
-          <p className="mt-4 text-[var(--muted)]">Loading trackers...</p>
-        </div>
-      ) : trackers.length === 0 ? (
-        <div className="card text-center py-12">
-          <div className="text-4xl mb-4">📭</div>
-          <h2 className="text-xl font-semibold mb-2">No Trackers Yet</h2>
-          <p className="text-[var(--muted)] mb-4">
-            You haven&apos;t set up any class trackers yet.
-          </p>
-          <Link href="/track" className="btn-primary inline-block">
-            Track Your First Class
+      <div className="form-container" style={{ maxWidth: '540px' }}>
+        {/* Header Card */}
+        <div className="form-card animate-fade-in" style={{ 
+          padding: '1.25rem 1.5rem', 
+          marginBottom: '1rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <div>
+            <h1 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Your trackers</h1>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>{email}</p>
+          </div>
+          <Link href="/track" className="btn-solid btn-blue btn-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Add new
           </Link>
         </div>
-      ) : (
-        <div className="space-y-4">
-          {trackers.filter(t => t.is_active).map((tracker) => (
-            <div key={tracker.id} className="card">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-lg truncate">
-                    {tracker.class_name || "Unknown Class"}
-                  </h3>
-                  <p className="text-[var(--muted)] text-sm">
-                    {tracker.term_code ? formatTermCode(tracker.term_code) : "Unknown Term"}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    tracker.is_active 
-                      ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
-                      : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
-                  }`}>
-                    {tracker.is_active ? "Active" : "Inactive"}
+
+        {successMessage && (
+          <div className="message message-success animate-fade-in" style={{ marginBottom: '1rem' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+            {successMessage}
+          </div>
+        )}
+
+        {error && (
+          <div className="message message-error" style={{ marginBottom: '1rem' }}>
+            {error}
+          </div>
+        )}
+
+        {isLoading ? (
+          <div className="form-card" style={{ padding: '3rem', textAlign: 'center' }}>
+            <span className="spinner" style={{ margin: '0 auto', display: 'block', color: 'var(--ucla-blue)' }}></span>
+          </div>
+        ) : activeTrackers.length === 0 ? (
+          <div className="form-card animate-fade-in" style={{ padding: '3rem 2rem', textAlign: 'center' }}>
+            <div style={{
+              width: '72px',
+              height: '72px',
+              borderRadius: '50%',
+              background: 'var(--cream)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 1rem'
+            }}>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                <line x1="12" y1="22.08" x2="12" y2="12"/>
+              </svg>
+            </div>
+            <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>No active trackers yet</p>
+            <Link href="/track" className="btn-solid btn-gold">
+              Track your first class
+            </Link>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {activeTrackers.map((tracker, index) => (
+              <div 
+                key={tracker.id} 
+                className="tracker-card animate-fade-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', minWidth: 0 }}>
+                    <div className="tracker-icon">
+                      {tracker.subject_area?.slice(0, 2) || "??"}
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <div className="tracker-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {tracker.class_name || "Unknown Class"}
+                      </div>
+                      <p className="tracker-meta">
+                        {tracker.term_code ? formatTermCode(tracker.term_code) : ""}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="badge badge-success" style={{ flexShrink: 0 }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }}></span>
+                    Active
                   </span>
                 </div>
-              </div>
 
-              <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                <div>
-                  <span className="text-[var(--muted)]">Check Frequency</span>
-                  <p className="font-medium capitalize">{tracker.check_interval}</p>
-                </div>
-                <div>
-                  <span className="text-[var(--muted)]">Last Checked</span>
-                  <p className="font-medium">{formatDate(tracker.last_checked_at)}</p>
-                </div>
-                <div>
-                  <span className="text-[var(--muted)]">Last Change</span>
-                  <p className="font-medium">{formatDate(tracker.last_change_at)}</p>
-                </div>
-                <div>
-                  <span className="text-[var(--muted)]">Expires</span>
-                  <p className="font-medium">{tracker.expires_at ? formatDate(tracker.expires_at) : "Never"}</p>
-                </div>
-              </div>
+                <div className="tracker-divider"></div>
 
-              <div className="mt-4 pt-4 border-t border-[var(--border)] flex items-center justify-between">
-                <a
-                  href={tracker.ucla_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[var(--ucla-blue)] hover:underline text-sm"
-                >
-                  View on UCLA SOC →
-                </a>
-                <button
-                  onClick={() => handleDelete(tracker.id)}
-                  className="text-red-600 hover:text-red-700 text-sm font-medium"
-                >
-                  Delete
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.85rem', color: 'var(--text-light)' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                      </svg>
+                      {tracker.check_interval === 'hourly' ? 'Hourly' : tracker.check_interval === '6hours' ? 'Every 6h' : 'Daily'}
+                    </span>
+                    <span>·</span>
+                    <span>Until {formatDate(tracker.expires_at)}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <a
+                      href={tracker.ucla_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="icon-btn"
+                      title="View on UCLA"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/>
+                        <line x1="10" y1="14" x2="21" y2="3"/>
+                      </svg>
+                    </a>
+                    <button
+                      onClick={() => handleDelete(tracker.id)}
+                      className="icon-btn icon-btn-danger"
+                      title="Delete tracker"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <footer className="footer-simple" style={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}>
+        <span>Not affiliated with UCLA</span>
+        <a href="https://github.com/shloakr/visualping-local" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      </footer>
     </div>
   );
 }
@@ -296,11 +395,12 @@ function ManageContent() {
 export default function ManagePage() {
   return (
     <Suspense fallback={
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/4 mb-8"></div>
-          <div className="h-32 bg-gray-200 rounded"></div>
+      <div className="form-page">
+        <div className="form-container" style={{ maxWidth: '540px' }}>
+          <div className="form-card" style={{ padding: '2rem' }}>
+            <div style={{ height: '24px', background: 'var(--cream)', borderRadius: '8px', width: '40%', marginBottom: '0.5rem' }}></div>
+            <div style={{ height: '16px', background: 'var(--cream)', borderRadius: '6px', width: '30%' }}></div>
+          </div>
         </div>
       </div>
     }>

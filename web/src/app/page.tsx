@@ -2,180 +2,143 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-[var(--ucla-gold)]/10 text-[var(--ucla-darkest-blue)] dark:text-[var(--ucla-gold)] px-4 py-1.5 rounded-full text-sm font-medium mb-6">
-            <span>🎓</span>
-            <span>Free for UCLA Students</span>
+    <>
+      {/* Hero Section with Background */}
+      <div className="hero-bg">
+        {/* Navigation */}
+        <nav className="nav">
+          <Link href="/" className="nav-logo">
+            UCLA Class Tracker
+          </Link>
+          <div className="nav-links">
+            <Link href="/track" className="nav-btn">
+              Track a Class
+            </Link>
+            <Link href="/manage" className="nav-btn">
+              Manage
+            </Link>
           </div>
-          
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6">
-            Never Miss a Class Again
+        </nav>
+
+        {/* Hero Content */}
+        <div className="hero-content">
+          {/* Badge */}
+          <div className="badge-pill animate-fade-in">
+            <span className="badge-dot"></span>
+            <span>Free for all Bruins</span>
+          </div>
+
+          {/* Main Headline */}
+          <h1 className="hero-title animate-fade-in delay-1">
+            Never miss a UCLA class again.
           </h1>
           
-          <p className="text-lg text-[var(--muted)] max-w-2xl mx-auto mb-8">
-            Track UCLA class enrollment status and get instant email notifications 
-            when spots open up. Stop refreshing the Schedule of Classes manually.
+          <p className="hero-subtitle animate-fade-in delay-2">
+            Get instant email alerts when spots open up in your classes. We check every hour so you don&apos;t have to.
           </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/track" className="btn-primary text-lg px-8 py-3 inline-block text-center">
-              Start Tracking a Class
+
+          {/* CTA Buttons */}
+          <div className="animate-fade-in delay-3" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <Link href="/track" className="btn-solid">
+              Start tracking
             </Link>
-            <Link href="#how-it-works" className="btn-secondary text-lg px-8 py-3 inline-block text-center">
-              How It Works
+            <Link href="#how" className="btn-outline">
+              How it works
             </Link>
           </div>
-        </div>
-      </section>
 
-      {/* How It Works */}
-      <section id="how-it-works" className="py-16 px-4 bg-slate-50 dark:bg-slate-900/50">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="card text-center">
-              <div className="w-12 h-12 bg-[var(--ucla-blue)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">1️⃣</span>
+          {/* Floating Stats Card */}
+          {/* <div className="float-card" style={{ bottom: '20%', right: '8%' }}>
+            <div style={{ fontWeight: 700, marginBottom: '0.75rem', fontSize: '0.9rem' }}>Stats</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-medium)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '2rem' }}>
+                <span>Monitoring</span>
+                <span style={{ fontWeight: 600, color: 'var(--ucla-blue)' }}>24/7</span>
               </div>
-              <h3 className="font-semibold text-lg mb-2">Paste Your Class URL</h3>
-              <p className="text-[var(--muted)]">
-                Copy the URL from the UCLA Schedule of Classes page for the class you want to track.
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '2rem' }}>
+                <span>Check interval</span>
+                <span style={{ fontWeight: 600, color: 'var(--ucla-blue)' }}>1 hour</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '2rem' }}>
+                <span>Price</span>
+                <span style={{ fontWeight: 600, color: 'var(--ucla-gold)' }}>Free</span>
+              </div>
+            </div>
+          </div> */}
+        </div>
+      </div>
+
+      {/* How it Works Section */}
+      <section id="how" className="section-cream">
+        <h2 className="section-title">How it works</h2>
+        <p className="section-subtitle">Three simple steps to never miss enrollment</p>
+
+        <div className="steps-container">
+          <div className="step-card animate-fade-in">
+            <div className="step-number">1</div>
+            <div>
+              <div className="step-title">Paste the class URL</div>
+              <p className="step-desc">
+                Search for your class on UCLA&apos;s Schedule of Classes, click on the lecture section, and copy the URL.
               </p>
             </div>
-            
-            <div className="card text-center">
-              <div className="w-12 h-12 bg-[var(--ucla-blue)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">2️⃣</span>
-              </div>
-              <h3 className="font-semibold text-lg mb-2">Add Your Email & API Key</h3>
-              <p className="text-[var(--muted)]">
-                Enter your email and free Resend API key. We verify your key works before saving.
+          </div>
+
+          <div className="step-card animate-fade-in delay-1">
+            <div className="step-number">2</div>
+            <div>
+              <div className="step-title">Add your email + API key</div>
+              <p className="step-desc">
+                Enter your email and a free Resend API key. We&apos;ll use it to send you notifications.
               </p>
             </div>
-            
-            <div className="card text-center">
-              <div className="w-12 h-12 bg-[var(--ucla-blue)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">3️⃣</span>
-              </div>
-              <h3 className="font-semibold text-lg mb-2">Get Notified</h3>
-              <p className="text-[var(--muted)]">
-                We check the class every hour. When enrollment status changes, you get an instant email.
+          </div>
+
+          <div className="step-card animate-fade-in delay-2">
+            <div className="step-number step-number-gold">3</div>
+            <div>
+              <div className="step-title">Get notified instantly</div>
+              <p className="step-desc">
+                We check every hour. The moment enrollment status changes, you&apos;ll get an email.
               </p>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Features */}
-      <section className="py-16 px-4">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Features</h2>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="card flex gap-4">
-              <div className="text-2xl">⚡</div>
-              <div>
-                <h3 className="font-semibold mb-1">Hourly Checks</h3>
-                <p className="text-[var(--muted)] text-sm">
-                  We check your classes every hour so you never miss a spot opening.
-                </p>
-              </div>
-            </div>
-            
-            <div className="card flex gap-4">
-              <div className="text-2xl">🔒</div>
-              <div>
-                <h3 className="font-semibold mb-1">Your Own API Key</h3>
-                <p className="text-[var(--muted)] text-sm">
-                  You use your own Resend key, so you&apos;re in full control of your email notifications.
-                </p>
-              </div>
-            </div>
-            
-            <div className="card flex gap-4">
-              <div className="text-2xl">🎯</div>
-              <div>
-                <h3 className="font-semibold mb-1">Enrollment Status Only</h3>
-                <p className="text-[var(--muted)] text-sm">
-                  We track the enrollment table specifically, ignoring irrelevant page changes.
-                </p>
-              </div>
-            </div>
-            
-            <div className="card flex gap-4">
-              <div className="text-2xl">📅</div>
-              <div>
-                <h3 className="font-semibold mb-1">Auto-Expiry</h3>
-                <p className="text-[var(--muted)] text-sm">
-                  Set an expiration date and tracking stops automatically after enrollment ends.
-                </p>
-              </div>
-            </div>
+        {/* API Key Info */}
+        <div className="info-card animate-fade-in delay-3">
+          <div className="info-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+            </svg>
           </div>
-        </div>
-      </section>
-
-      {/* Resend Setup */}
-      <section className="py-16 px-4 bg-slate-50 dark:bg-slate-900/50">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-4">Getting a Resend API Key</h2>
-          <p className="text-center text-[var(--muted)] mb-8">
-            Resend is a free email service. Get your API key in 2 minutes:
-          </p>
-          
-          <div className="card">
-            <ol className="space-y-4">
-              <li className="flex gap-3">
-                <span className="font-mono bg-[var(--ucla-blue)] text-white w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0">1</span>
-                <span>
-                  Go to <a href="https://resend.com/signup" target="_blank" rel="noopener noreferrer" className="text-[var(--ucla-blue)] hover:underline">resend.com/signup</a> and create a free account
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="font-mono bg-[var(--ucla-blue)] text-white w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0">2</span>
-                <span>
-                  Go to <strong>API Keys</strong> in the sidebar
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="font-mono bg-[var(--ucla-blue)] text-white w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0">3</span>
-                <span>
-                  Click <strong>Create API Key</strong>, give it a name like &quot;UCLA Tracker&quot;
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="font-mono bg-[var(--ucla-blue)] text-white w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0">4</span>
-                <span>
-                  Copy the key (starts with <code className="bg-slate-100 dark:bg-slate-800 px-1 rounded">re_</code>) and paste it in our form
-                </span>
-              </li>
+          <div style={{ flex: 1 }}>
+            <div className="info-title">Getting a Resend API key</div>
+            <ol className="info-list">
+              <li>Sign up at <a href="https://resend.com" target="_blank" rel="noopener noreferrer" className="link">resend.com</a> (free)</li>
+              <li>Go to API Keys → Create API Key</li>
+              <li>Copy the key (starts with <code style={{ background: '#f5f5f5', padding: '0.125rem 0.375rem', borderRadius: '4px', fontSize: '0.8rem' }}>re_</code>)</li>
             </ol>
-            
-            <div className="mt-6 p-4 bg-[var(--ucla-gold)]/10 rounded-lg">
-              <p className="text-sm">
-                <strong>Free tier:</strong> 100 emails/day and 3,000 emails/month — more than enough for class tracking!
-              </p>
+            <div className="info-footer">
+              <span style={{ color: 'var(--ucla-gold)' }}>★</span> Free tier includes 100 emails/day
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Track Your Classes?</h2>
-          <p className="text-[var(--muted)] mb-8">
-            Set up tracking in under a minute. No account needed.
-          </p>
-          <Link href="/track" className="btn-primary text-lg px-8 py-3 inline-block">
-            Start Tracking Now
-          </Link>
+      {/* Footer with Purple Mountain Background */}
+      <footer className="footer-hero">
+        <div className="footer-content">
+          <div className="footer-logo">UCLA Class Tracker</div>
+          <p className="footer-text">Never miss enrollment again.</p>
+          <div className="footer-links">
+            <span className="footer-link">Not affiliated with UCLA</span>
+            <a href="https://github.com/shloakr/visualping-local" target="_blank" rel="noopener noreferrer" className="footer-link">
+              GitHub
+            </a>
+          </div>
         </div>
-      </section>
-    </div>
+      </footer>
+    </>
   );
 }
